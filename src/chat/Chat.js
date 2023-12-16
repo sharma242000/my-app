@@ -6,14 +6,24 @@ import io from "socket.io-client";
 export class Chat extends React.Component {
 
     state = {
-        channels: null,
+        channels: [{ id: 1, name: 'Channel 1' }, { id: 2, name: 'Channel 2' }, { id: 3, name: 'Channel 3' }],
         socket: null,
-        channel: null
+        channel: null,
+        username: null,
     }
-    socket;
     componentDidMount() {
         this.loadChannels();
         this.configureSocket();
+
+        const headers = {
+            Authorization: localStorage.getItem('token'),
+            'Content-Type': 'application/x-www-form-urlencoded'
+        };
+        fetch('http://localhost:8000/user/username', {headers: headers}).then(async response => {
+            const data = await response.json();
+            console.log(data);
+            this.setState({ username: data.username });
+        })
     }
 
     configureSocket = () => {
@@ -25,8 +35,6 @@ export class Chat extends React.Component {
         });
         socket.on('message', message => {
             let channels = this.state.channels
-            console.log(message);
-            console.log(channels);
             channels.forEach(c => {
                 if (c.id === message.channel_id) {
                     if (!c.messages) {
@@ -36,7 +44,7 @@ export class Chat extends React.Component {
                     }
                 }
             });
-            this.setState({ channels });
+            this.setState({ channels: channels });
         });
         this.socket = socket;
     }
@@ -57,12 +65,10 @@ export class Chat extends React.Component {
             return c.id === id;
         });
         this.setState({ channel });
-        // this.socket.emit('channel-join', id, ack => {
-        // });
     }
 
     handleSendMessage = (channel_id, text) => {
-        this.socket.emit('send-message', { channel_id, text, senderName: this.socket.id, id: Date.now() });
+        this.socket.emit('send-message', { channel_id, text, senderName: this.username, id: Date.now() });
     }
 
     render() {
