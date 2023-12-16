@@ -24,7 +24,7 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
       e.preventDefault();
       axios.post('http://localhost:8000/auth/login', { username, password })
-      .catch((err) => console.log(err.response.data))
+      .catch((err) => window.alert("Error Found"))
       .then((res) => {
         if (res) {
           localStorage.setItem('token', res.data);
