@@ -6,20 +6,26 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
- 
-function createData(name, password) {
-    return { name, password};
-}
- 
-const rows = [
-    createData('TATA HARRIER', 'BLACK'),
-    createData('MAHINDRA THAR', 'RED'),
-    createData('MARUTI SWIFT', 'WHITE'),
-    createData('MG HECTOR', 'BLACK'),
-    createData('MERCEDES GLS', 'WHITE'),
-];
- 
+
+
 export default function MainPage() {
+
+    const [rows, setRows] = React.useState([]);
+
+    React.useEffect(() => {
+        const headers = {
+            Authorization: localStorage.getItem('token'),
+            'Content-Type': 'application/x-www-form-urlencoded'
+        };
+        fetch('http://localhost:8000/admin/users', {headers: headers}).then(async response => {
+            const data = await response.json();
+            if (!data){
+                window.location.href = '/SignIn';
+            }
+            setRows(data);
+        })
+    });
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 450 }} aria-label="simple table">
@@ -36,12 +42,12 @@ export default function MainPage() {
                 <TableBody>
                     {rows.map((row) => (
                         <TableRow
-                            key={row.name}
+                            key={row.username}
                             sx={{ '&:last-child td, &:last-child th':
                                 { border: 0 } }}
                         >
                             <TableCell component="th" scope="row">
-                                {row.name}
+                                {row.username}
                             </TableCell>
                             <TableCell >
                                 {row.password}
