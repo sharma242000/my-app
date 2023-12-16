@@ -24,8 +24,9 @@ export class Chat extends React.Component {
             }
         });
         socket.on('message', message => {
-            
             let channels = this.state.channels
+            console.log(message);
+            console.log(channels);
             channels.forEach(c => {
                 if (c.id === message.channel_id) {
                     if (!c.messages) {
@@ -41,9 +42,13 @@ export class Chat extends React.Component {
     }
 
     loadChannels = async () => {
-        fetch('http://localhost:8000/getChannels').then(async response => {
-            let data = await response.json();
-            this.setState({ channels: data.channels });
+        const headers = {
+            Authorization: localStorage.getItem('token'),
+            'Content-Type': 'application/x-www-form-urlencoded'
+        };
+        fetch('http://localhost:8000/user/users', {headers: headers}).then(async response => {
+            const data = await response.json();
+            this.setState({ channels: data });
         })
     }
 
@@ -58,7 +63,6 @@ export class Chat extends React.Component {
 
     handleSendMessage = (channel_id, text) => {
         this.socket.emit('send-message', { channel_id, text, senderName: this.socket.id, id: Date.now() });
-        console.log(this.socket.id);
     }
 
     render() {
