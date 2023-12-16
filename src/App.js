@@ -3,12 +3,13 @@ import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-rou
 import SignIn from './templates/SignIn';
 import SignUp from './templates/SignUp';
 import { Chat } from './chat/Chat';
+import MainPage from './templates/MainPage';
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<SignIn />} />
+                <Route path="/" element={<MainPage />} />
                 <Route path="/SignIn" element={<SignIn />} />
                 <Route path="/SignUp" element={<SignUp />} />
                 <Route path='/Chat' element = {<Chat />} />

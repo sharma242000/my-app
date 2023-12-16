@@ -3,7 +3,6 @@ import { ChannelList } from './ChannelList';
 import './chat.css';
 import { MessagesPanel } from './MessagesPanel';
 import io from "socket.io-client";
-const SERVER = "http://127.0.0.1:8000";
 export class Chat extends React.Component {
 
     state = {
@@ -18,21 +17,11 @@ export class Chat extends React.Component {
     }
 
     configureSocket = () => {
-        var socket = io('http://127.0.0.1:3000/', {transports: ["websocket", "polling"]});;
+        var socket = io('http://localhost:8080', {transports: ["websocket", "polling"]});;
         socket.on('connection', () => {
             if (this.state.channel) {
                 this.handleChannelSelect(this.state.channel.id);
             }
-        });
-        socket.on('channel', channel => {
-            
-            let channels = this.state.channels;
-            channels.forEach(c => {
-                if (c.id === channel.id) {
-                    c.participants = channel.participants;
-                }
-            });
-            this.setState({ channels });
         });
         socket.on('message', message => {
             
@@ -63,8 +52,8 @@ export class Chat extends React.Component {
             return c.id === id;
         });
         this.setState({ channel });
-        this.socket.emit('channel-join', id, ack => {
-        });
+        // this.socket.emit('channel-join', id, ack => {
+        // });
     }
 
     handleSendMessage = (channel_id, text) => {
