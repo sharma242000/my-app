@@ -21,7 +21,6 @@ export class Chat extends React.Component {
         };
         fetch('http://localhost:8000/user/username', {headers: headers}).then(async response => {
             const data = await response.json();
-            console.log(data);
             this.setState({ username: data.username });
         })
     }
@@ -68,7 +67,7 @@ export class Chat extends React.Component {
     }
 
     handleSendMessage = (channel_id, text) => {
-        this.socket.emit('send-message', { channel_id, text, senderName: this.username, id: Date.now() });
+        this.socket.emit('send-message', { channel_id, text, senderName: this.state.username, id: Date.now() });
     }
 
     render() {

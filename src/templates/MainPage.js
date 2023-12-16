@@ -13,17 +13,17 @@ export default function MainPage() {
     const [rows, setRows] = React.useState([]);
 
     React.useEffect(() => {
+        if (!localStorage.getItem('token')){
+            window.location.href = '/SignIn';
+        }
         const headers = {
             Authorization: localStorage.getItem('token'),
             'Content-Type': 'application/x-www-form-urlencoded'
         };
         fetch('http://localhost:8000/admin/users', {headers: headers}).then(async response => {
             const data = await response.json();
-            if (!data){
-                window.location.href = '/SignIn';
-            }
             setRows(data);
-        })
+        }).catch((err) => window.location.href = '/Chat');
     });
 
     return (
