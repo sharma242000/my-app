@@ -39,7 +39,7 @@ export default function SignUp() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await axios.post('http://localhost:8000/api/auth/register', { username, password });
+        await axios.post('http://localhost:8000/user/auth/register', { username, password });
     };
 
   return (
